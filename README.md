@@ -12,7 +12,8 @@ All testing was done on wow 3.3.5 though.<br>
 (you can open and merge all MPQs with MPQeditor, but I end up with a lot of 0kb blp files and empty folders that don't have a corresponding entry in the md5 trs file. I'm getting a lot more consistent results just extracting the common MPQs)
 - We are translating the md5 names for WMO's (buildings, raids, dungeons, etc) however as they are a layered map system I don't know the best way to compile them yet.
 So Kalimdor has a Tanaris WMO room map folder inside it, this folder is not touched, but Kalimdor will still be converted and compiled.
-And the whole WMO file is blacklisted from the macroMap script.
+And the whole WMO folder is blacklisted from the macroMap script.<br>
+So this means we will get a satalight map of all the lands, Azeroth, Kalidar, Northrend and some raids like Nexus80 and the PVPZones but, we won't get a satalight map of Ragefire Chasm or wailing caverns as they are technically indoors, where the satalight can't see.
 
 # Why?
 Well compiling the maps in this way will give you a 1:1 scale satellite overview world map. So take the well known GM Island at the very top of Kalimdor, or the lesser known unused island at the bottom.<br>
