@@ -67,7 +67,14 @@ if __name__ == "__main__":
 
 	# Build a list of all the folders in our minimap folder.
     folders = [folder for folder in os.listdir(os.getcwd()) if os.path.isdir(os.path.join(os.getcwd(), folder))]
-    folders.remove("WMO") # Hotfix, remove builds as they are not gridbased so the compile_images() rebuilder does not work.
+
+    # Skip WMO or wmo building minimap data untill we can figuer out how to compile thoes maps too.
+    item_to_remove = "WMO"
+    folders = [folder for folder in folders if folder.lower() != item_to_remove.lower()]
+    # Skip untranslated files if it excist
+    folders = [folder for folder in folders if folder != "!Unknown"]
+
+    # We should add a runtime flag for converting but not compileing wmo and untranslated tiles.
 
     # setup for progress counter
     maxLen = len(folders)
@@ -83,6 +90,7 @@ if __name__ == "__main__":
     print('''\n####
 Done
 ####''')
+    #input("Finished converted. press enter to compile.") #pause to edit converted tiles befor compiling.
     count = 1
     for i in folders:
     	print(f"({count}/{maxLen} {int((count/maxLen)*100)}%)Building {i}")
