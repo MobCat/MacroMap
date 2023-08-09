@@ -3,21 +3,29 @@ PoC semi-automated python tool for translating and compiling wow minimap data
 ![kalimdor](https://cdn.discordapp.com/attachments/1063759326340186172/1137393000889208852/image.png)
 
 # What is this?
-This is a two part basic python tool for translating WoW's md5 labeled minimap tile data back into real file names.
-The 2nd part of this tool will convert the blps into pngs and then compile those pngs into one large png for each zone.
+This is a two part basic python tool for translating WoW's md5 labeled minimap tile data back into real file names.<br>
+The 2nd part of this tool will convert the blps into pngs and then compile those pngs into one large png for each zone.<br>
+If you just want to see the compiled maps and don't want to setup and run this tool, you can view them all [here](https://archive.org/details/WoWMaps).<br>
+MacroMap has been tested on most versions of World of Warcraft from 0.5.3.3368 All the way to 3.3.5.12340<br>
+WoW 4.0 (cataclysm) Is going to take more work to figure out and I need to fix WMO rendering first.<br>
+You can see all the testing data at the end of this readme.
 
 # Limitations
-- I don't know how to correctly extract patchs, and the expansion data over top of that. So you can have a 3.3.5 map. not just a 3.0.0 map.<br>
-All testing was done on wow 3.3.5 though.<br>
-(you can open and merge all MPQs with MPQeditor, but I end up with a lot of 0kb blp files and empty folders that don't have a corresponding entry in the md5 trs file. I'm getting a lot more consistent results just extracting the common MPQs)
-- We are translating the md5 names for WMO's (buildings, raids, dungeons, etc) however as they are a layered map system I don't know the best way to compile them yet.
+- MPQeditor might do some weird things when unpacking merged mpq data resulting in a lot of 0kb blp files and empty folders that don't have a corresponding entry in the md5 trs file.<br>
+This seems "normal" but it might be something that needs investigating later
+- We are translating the md5 names for WMO's (buildings, raids, dungeons, etc) however as they are a layered map system I don't know the best way to compile them yet.<br>
 So Kalimdor has a Tanaris WMO room map folder inside it, this folder is not touched, but Kalimdor will still be converted and compiled.
 And the whole WMO folder is blacklisted from the macroMap script.<br>
-So this means we will get a satalight map of all the lands, Azeroth, Kalidar, Northrend and some raids like Nexus80 and the PVPZones but, we won't get a satalight map of Ragefire Chasm or wailing caverns as they are technically indoors, where the satalight can't see.
+So this means we will get a satalight map of all the lands, Azeroth, Kalidar, Northrend and some raids like Nexus80 and the PVPZones but, we won't get a satalight map of Ragefire Chasm or Wailing Caverns as they are technically indoors, where the satalight can't see.<br>
+I am working on this and have made some progress in it.<br>
+Undercity_ZZZ_XX_YY. I can compile all the XX_YY back together, but I have no idea how the ZZZ all join back together.<br>
+Ogrimmar_ZZZ_XX_YY actually seems to be worse with 144 ZZZ "zones".
+
 
 # Why?
 Well compiling the maps in this way will give you a 1:1 scale satellite overview world map. So take the well known GM Island at the very top of Kalimdor, or the lesser known unused island at the bottom.<br>
 These exported world maps are arranged and filled to scale, so you know exactly how many map tiles you have to fatigue swim to get to places. Or can more easily find other random things out in the ocean or other unused parts of the map where the game maps where "glued" together. So this makes things like flying to the other parts of Emerald Dream a little easier to navigate.<br>
+Also this is a grate way to explore versions of WoW without actually running them. Or at least gives you a good idea what has changed over time.<br>
 So yes, if you see it on the macro map, you should be able to fly or telehack past world borders to see it in-game. As the macro map is layed out the same as it is rendered in-game.<br>
 This also means we can get a complete world map of development zones as they where still in the game. So we only have one leak for the development map, but going off the minimap data, we only have around 6% of that map and the rest of the map model data is missing. Or Emerald Dream, where we can tell from the minimap that it's not meant to be this green, a lot of this neon green is because of missing textures. Textures that are shown on the minimap but not in-game anymore.<br>
 On the subject of Emerald Dream, map tiles map24_27 to map24_30 and etc, the ones that are mostly black with a little bit of real map in the top corner.<br>
@@ -78,10 +86,47 @@ This naming scheme was chosen to make it both easy to find the macro maps in the
 Please note though as some zones like NexusRaid and DalaranPrison are so small they only have one map tile. So you will end up with a macro map and a single map tile, that are the same thing..<br>
 Also a reminder we are not converting and compiling the WMO folder. So those will just remain as sorted blp files.<br><br>
 
+# Test data
+This tool has been tested on most version of wow, but not without some weird hitches here and there, so here is all my test data on this.<br>
+Some vers of wow will export with the same "issues" so here is a rundown of all of the "issues" and I will just append a number to each ver I have tested.<br>
+1. Alpha or beta. You need to manually copy Data\textures\Minimap\md5translate.txt from the games directory into our exported minimap folder before running macroMap.<br>
+Well 0.12 is a beta but they migrated to the new md5translate.trs format by then.<br>
+2. Has a left over complete map in the root of the folder structure. This will be saved as a !Root.png file<br>
+3. Has left over minimap tiles that are not listed in the md5translate so they go unused in game<br>
+This can happen when a map gets updated, a new minimap is generated for it, but the old one was not removed completely.<br>
+These leftover tiles are moved to an !Unknown folder but do not get converted into pngs. same as the WMO folder.<br>
+4. Has blank folders. This is where the zone is listed in the md5translate file however no map tiles where found to place in there.<br>
+Take RazorfenDownsInstance from 0.5.5.3494. There seems to be 24 map tiles for this zone however, they all have the same md5 name<br>
+meaning they are the exact same file, probably meaning this was just a temp placeholder make it all black or water and will replace it or fix it later.<br>
+The blank RazorfenDowns and RazorfenDownsInstance folders seem to persist for awhile but I only checked the md5translate for 0.5.5.3494<br>
+To check what was going on. So it might have more unique map tiles added that are not just water but they are never shown in game soo<br>
+5. Incorrectly scaled Emerald Dream was added here and persists all the way to wow 3.3.5. It can be "fixed" by Nearest Neighbor scaling<br>
+the 64x64 tile to correctly fill the 256x256 tile, overwriting the incorrectly black filled space.<br>
+"fun" fact. There is a correctly scaled version of this part of Emerald Dream in the 3.3.5 patched dev map.<br>
+6. Contains blank 1 byte blp files. (They only contain 00 in hex) It has something to do with how mpq patches are layered.
+However I'm not to concerned as they are also untranslated so they are not used by the game either.<br><br>
+0.5.3.3368  [1]<br>
+0.5.5.3494  [1, 4]<br>
+0.6.0.3592  [1, 4]<br>
+0.7.0.3694  [1, 4]<br>
+0.7.1.3702  [1, 4]<br>
+0.7.6.3712  [1, 4]<br>
+0.8.0.3734  [1, 4, 5]<br>
+0.9.0.3807  [1, 2, 4, 6]<br>
+0.9.1.3810  [1, 2, 3, 4, 6]<br>
+0.10.0.3892 [1, 2, 3, 4, 6]<br>
+0.11.0.3925 [1, 2, 3, 4, 6]<br>
+0.12.0.3988 [2, 3, 4, 6]<br>
+1.0.0.3980  [2, 4]<br>
+1.5.0.4442  [3, 4, 6]<br>
+1.12.2.6005 [4, 6]<br>
+2.4.3.8606  [4, 6]<br>
+3.3.5.12340 [4, 6]<br>
+
 # TODO / improvements
-Need to add a "you need to rename and sort tiles before converting them" check.<br>
-Need to make checks for empty folders rather then just skipping them.<br>
-Need to make a check for macroMap for if only one map tile, don't make macroMap.<br>
-Should build a 3rd script to regex find, move and rename the macroMaps out of the tile folders into there own folders.<br>
-Need to figure out how to compile patch data and add more robust checks for if files are being replaced, convert and compile both versions.<br>
-    Part of this would be checking for and cleaning up the 0kb blps I'm getting when trying to extract patch data.
+Figure out WMO rendering.<br>
+Add runtime flags for the AIO scrupt<br>
+Build the script for MPQEditrer so you can just point this thing at a folder and it automatly does the rest.<br>
+Part of that would be extracting the minimap tiles, checking them for the md5translate.trs files, If it cant find it, go back and copy the alpha/beta md5translate.txt file into our work folder.<br>
+Need to figure out if it's possible to check patch data vs the common file for if files are being replaced, convert and compile both versions.<br>
+You can see this in action with 3.3.5. If you only do common mpq vs all mpq the dev map is is vastly different.
